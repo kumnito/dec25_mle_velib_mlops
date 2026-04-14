@@ -4,7 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'collector/**'    # déclenché uniquement si collector/ change
+      - 'collector/**'
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -12,27 +13,43 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
 
-      - name: Push to HuggingFace Space
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install huggingface_hub
+        run: pip install huggingface_hub
+
+      - name: Upload files to HuggingFace Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Préparer un dossier temporaire propre
-          mkdir hf_push
-          cp collector/ingestion_hf.py        hf_push/
-          cp collector/collector_app.py        hf_push/
-          cp collector/Dockerfile.collector    hf_push/Dockerfile
-          cp collector/requirements.collector.txt hf_push/requirements.txt
+          python - <<'EOF'
+          import os
+          from huggingface_hub import HfApi
 
-          # Initialiser et pusher vers HF
-          cd hf_push
-          git init
-          git config user.email "github-actions@github.com"
-          git config user.name  "GitHub Actions"
-          git remote add space https://oauth2:$HF_TOKEN@huggingface.co/spaces/voroman/velib-collector
-          git add .
-          git commit -m "Sync from GitHub — ${{ github.sha }}"
-          git push space HEAD:main --force
+          api   = HfApi()
+          token = os.environ["HF_TOKEN"]
+          repo  = "voroman/velib-collector"
+
+          files = {
+              "collector/ingestion_hf.py":           "ingestion_hf.py",
+              "collector/collector_app.py":           "collector_app.py",
+              "collector/Dockerfile.collector":       "Dockerfile",
+              "collector/requirements.collector.txt": "requirements.txt",
+          }
+
+          for local_path, remote_path in files.items():
+              api.upload_file(
+                  path_or_fileobj=local_path,
+                  path_in_repo=remote_path,
+                  repo_id=repo,
+                  repo_type="space",
+                  token=token,
+              )
+              print(f"Uploaded {local_path} → {remote_path}")
+
+          print("Sync terminé ✓")
+          EOF
