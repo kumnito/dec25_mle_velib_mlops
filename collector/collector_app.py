@@ -17,10 +17,11 @@ Démarrage sur HuggingFace Spaces :
 """
 
 import os
+import threading
 from datetime import datetime
 from flask import Flask, jsonify
 
-from ingestion_hf import collect
+from ingestion_hf import ingest
 
 app = Flask(__name__)
 
@@ -42,13 +43,17 @@ def health():
 def run_collect():
     """Endpoint de collecte — appelé par cron-job.org toutes les 5 min.
 
-    retour : JSON avec les métriques de la collecte
+    Lance la collecte en arrière-plan et répond immédiatement 200
+    pour éviter le timeout du worker gunicorn.
     """
-    try:
-        result = collect()
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    def run():
+        try:
+            ingest()
+        except Exception as e:
+            print(f"[ERREUR collecte] {e}")
+
+    threading.Thread(target=run, daemon=True).start()
+    return jsonify({"status": "started", "time": datetime.now().isoformat()}), 200
 
 
 # ─────────────────────────────────────────────────────────────────────────────

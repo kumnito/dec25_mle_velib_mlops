@@ -28,6 +28,12 @@ velib/
 │   ├── 05_predictions.py    ← Prédictions sur test set
 │   └── 06_bilan.py          ← Rapport final
 │
+├── collector/               ← Service de collecte HuggingFace Spaces
+│   ├── ingestion_hf.py      ← Script de collecte (fichiers rotatifs)
+│   ├── collector_app.py     ← Serveur Flask (endpoint /collect)
+│   ├── Dockerfile.collector ← Image Docker pour HuggingFace Spaces
+│   └── requirements.collector.txt
+│
 └── streamlit/
     └── app.py               ← Dashboard (lecture locale)
 ```
