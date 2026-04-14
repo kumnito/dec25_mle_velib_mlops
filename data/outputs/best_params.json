@@ -1,0 +1,35 @@
+{
+  "Baseline": {
+    "mae": 11.88
+  },
+  "Ridge": {
+    "alpha": 990.4792
+  },
+  "RandomForest": {
+    "n_estimators": 468,
+    "max_depth": 15,
+    "min_samples_leaf": 146,
+    "max_features": 0.9825487423645705,
+    "min_samples_split": 10
+  },
+  "GradientBoosting": {
+    "n_estimators": 237,
+    "max_depth": 7,
+    "learning_rate": 0.011993285040303257,
+    "subsample": 0.9654593914385029,
+    "min_samples_leaf": 97,
+    "max_features": 0.9991537490907574
+  },
+  "XGBoost": {
+    "n_estimators": 232,
+    "max_depth": 6,
+    "learning_rate": 0.12272662063860754,
+    "subsample": 0.9372938568071518,
+    "colsample_bytree": 0.5236769398724859,
+    "colsample_bylevel": 0.562214355487758,
+    "min_child_weight": 21,
+    "reg_alpha": 1.4002604468647064,
+    "reg_lambda": 1.4716333468536236,
+    "gamma": 0.7759872843048987
+  }
+}

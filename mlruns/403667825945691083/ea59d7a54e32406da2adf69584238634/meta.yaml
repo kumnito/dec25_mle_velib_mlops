@@ -1,0 +1,15 @@
+artifact_uri: /app/mlruns/403667825945691083/ea59d7a54e32406da2adf69584238634/artifacts
+end_time: 1775340809741
+entry_point_name: ''
+experiment_id: '403667825945691083'
+lifecycle_stage: active
+run_id: ea59d7a54e32406da2adf69584238634
+run_name: Ridge_trial_041
+run_uuid: ea59d7a54e32406da2adf69584238634
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775340809160
+status: 3
+tags: []
+user_id: root

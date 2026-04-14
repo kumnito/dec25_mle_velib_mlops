@@ -1,0 +1,15 @@
+artifact_uri: /app/mlruns/403667825945691083/e72d8d18ee094a75921cfaf3d8b85eea/artifacts
+end_time: 1775459792298
+entry_point_name: ''
+experiment_id: '403667825945691083'
+lifecycle_stage: active
+run_id: e72d8d18ee094a75921cfaf3d8b85eea
+run_name: XGBoost_trial_142
+run_uuid: e72d8d18ee094a75921cfaf3d8b85eea
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775459791944
+status: 3
+tags: []
+user_id: root

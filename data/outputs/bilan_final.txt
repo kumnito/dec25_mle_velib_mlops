@@ -1,0 +1,92 @@
+╔══════════════════════════════════════════════════════════╗
+║  BILAN FINAL — PROJET VÉLIB' ML PIPELINE                ║
+║  Généré le : 2026-04-07 07:03:28                         ║
+╚══════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════
+  1. BENCHMARK — COMPARAISON DES MODÈLES
+════════════════════════════════════════════════════════════
+  Modèle                                  MAE    RMSE      R²
+  ────────────────────────────────────────────────────────
+  XGBoost                               7.43%  10.87% 0.7646 ← MEILLEUR
+  Random Forest                         7.46%  10.99% 0.7592
+  Ridge                                 7.86%  10.81% 0.7671
+  Gradient Boosting                     8.01%  11.43% 0.7396
+  Baseline (moyenne)                   17.16%  22.41% -0.0015
+  ────────────────────────────────────────────────────────
+  Baseline MAE : 17.16%
+  Gain obtenu  : 57%  (réduction d'erreur vs prédiction naïve)
+
+════════════════════════════════════════════════════════════
+  2. IMPORTANCE DES FEATURES (top 10)
+════════════════════════════════════════════════════════════
+  lag_60min                      █████████████████████████   32.3%
+  station_trend_avg              ████████████░░░░░░░░░░░░░   16.8%
+  lag_res_240min                 ████████████░░░░░░░░░░░░░   15.9%
+  is_vacation                    ████░░░░░░░░░░░░░░░░░░░░░    6.1%
+  hour                           ███░░░░░░░░░░░░░░░░░░░░░░    4.9%
+  lag_240min                     ███░░░░░░░░░░░░░░░░░░░░░░    4.8%
+  is_monday_morning              █░░░░░░░░░░░░░░░░░░░░░░░░    2.4%
+  temp_anomalie                  █░░░░░░░░░░░░░░░░░░░░░░░░    2.3%
+  hour_cos                       █░░░░░░░░░░░░░░░░░░░░░░░░    2.0%
+  weather_severity               █░░░░░░░░░░░░░░░░░░░░░░░░    1.9%
+
+════════════════════════════════════════════════════════════
+  3. PERFORMANCES SUR LE TAUX RÉEL (0-100%)
+════════════════════════════════════════════════════════════
+  MAE  : 7.42%  — erreur absolue moyenne
+  R²   : 0.8687  — variance expliquée du taux réel
+  P90  : 16.42%  — 90% des erreurs sont inférieures à cette valeur
+  Gain : 71%   — vs prédire toujours la moyenne
+
+  Distribution des erreurs :
+          <-30  █░░░░░░░░░░░░░░░░░░░  1.7%
+       -30:-20  █████░░░░░░░░░░░░░░░  8.0%
+       -20:-10  █████████░░░░░░░░░░░  13.8%
+        -10:-5  █████████░░░░░░░░░░░  14.2%
+         -5:-2  ███████░░░░░░░░░░░░░  11.5%
+          -2:0  ███████░░░░░░░░░░░░░  10.7%
+           0:2  ████████░░░░░░░░░░░░  12.6%
+           2:5  ████████░░░░░░░░░░░░  13.1%
+          5:10  ██████░░░░░░░░░░░░░░  9.5%
+         10:20  █░░░░░░░░░░░░░░░░░░░  2.6%
+           >20  ░░░░░░░░░░░░░░░░░░░░  1.4%
+
+════════════════════════════════════════════════════════════
+  4. DÉCISIONS MÉTHODOLOGIQUES CLÉS
+════════════════════════════════════════════════════════════
+  • Lags temporels via merge_asof
+    shift(N) décale de N lignes, pas de N minutes.
+    merge_asof garantit un lag temporel réel (±30min de tolérance).
+
+  • Cible résiduelle (residual)
+    Prédit l'écart à la normale station, pas le taux brut.
+    Réduction de variance ×2.7 → tâche plus facile pour le modèle.
+
+  • Split temporel 80/20 (pas aléatoire)
+    Simule la condition de production : toujours prédire vers le futur.
+    La CV a été retirée — avec ~1 mois de données, les folds sont
+    trop courts (~6j) pour capturer les habitudes hebdomadaires.
+    Le test set 80/20 est la métrique de référence.
+
+  • Modèles exclus définitivement
+    KNN         : malédiction dimensionnalité (24 features, 1.2M lignes)
+    Extra Trees : seuils aléatoires contre-productifs sur features propres
+    SVR RBF     : O(n²) mémoire, contraint à 10k lignes
+
+════════════════════════════════════════════════════════════
+  5. LIMITES ET PERSPECTIVES
+════════════════════════════════════════════════════════════
+  Limite principale : période de données courte (~1 mois).
+  Sur 12-24 mois, la saisonnalité développerait un signal
+  plus fort → R² estimé à 0.75-0.85.
+
+  Pistes d'amélioration :
+  • Ajouter des événements (concerts, grèves, météo extrême)
+  • Features de voisinage (stations proches)
+  • Modèle LSTM pour capturer les dépendances long-terme
+  • Rééquilibrage du dataset sur les événements rares
+
+════════════════════════════════════════════════════════════
+  FIN DU RAPPORT
+════════════════════════════════════════════════════════════

@@ -1,0 +1,15 @@
+artifact_uri: /app/mlruns/403667825945691083/c86466010a7e426bbf814d15b0e62659/artifacts
+end_time: 1775430601314
+entry_point_name: ''
+experiment_id: '403667825945691083'
+lifecycle_stage: active
+run_id: c86466010a7e426bbf814d15b0e62659
+run_name: GradientBoosting_trial_078
+run_uuid: c86466010a7e426bbf814d15b0e62659
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775430601037
+status: 3
+tags: []
+user_id: root

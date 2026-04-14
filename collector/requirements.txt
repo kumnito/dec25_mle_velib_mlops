@@ -1,0 +1,6 @@
+flask==3.0.3
+gunicorn==22.0.0
+requests==2.32.3
+pandas==2.3.3
+huggingface_hub==0.24.6
+holidays==0.46

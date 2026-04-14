@@ -1,0 +1,15 @@
+artifact_uri: /app/mlruns/403667825945691083/f0593408c2a3414b886baa269f851f66/artifacts
+end_time: 1775358953480
+entry_point_name: ''
+experiment_id: '403667825945691083'
+lifecycle_stage: active
+run_id: f0593408c2a3414b886baa269f851f66
+run_name: RandomForest_trial_045
+run_uuid: f0593408c2a3414b886baa269f851f66
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775358953204
+status: 3
+tags: []
+user_id: root

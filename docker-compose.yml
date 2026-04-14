@@ -1,0 +1,110 @@
+# ─────────────────────────────────────────────────────────────
+# Docker Compose — Projet Vélib'
+#
+# Services :
+#   pipeline   → exécute les phases ML (1 à 6)
+#   streamlit  → dashboard de visualisation
+#
+# Volume partagé :
+#   ./data ←→ /app/data   (raw, processed, outputs)
+#
+# Usage :
+#   Phase unique   : docker compose run pipeline python src/02_preprocessing.py
+#   Pipeline complet : docker compose run pipeline
+#   Dashboard      : docker compose up streamlit
+# ─────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Service pipeline ML ──────────────────────────────────────
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: velib_pipeline
+
+    # Volume partagé : les scripts lisent/écrivent dans /app/data
+    volumes:
+      - ./data:/app/data
+
+    # Variables d'environnement depuis .env
+    env_file:
+      - .env
+
+    # Pas de redémarrage automatique : le pipeline s'arrête quand il a fini
+    restart: "no"
+
+    # Profil "pipeline" : non lancé par `docker compose up` seul
+    profiles:
+      - pipeline
+
+  # ── Service Streamlit ─────────────────────────────────────────
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    container_name: velib_streamlit
+
+    ports:
+      - "${STREAMLIT_PORT:-8501}:8501"
+
+    # Lit les fichiers produits par le pipeline
+    volumes:
+      - ./data:/app/data
+
+    env_file:
+      - .env
+
+    # Redémarre automatiquement sauf si arrêté manuellement
+    restart: unless-stopped
+
+    # Profil par défaut : lancé avec `docker compose up`
+    profiles:
+      - streamlit
+
+  # ── Service MLflow ───────────────────────────────────────────
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: velib_mlflow
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri /app/mlruns
+      --default-artifact-root /app/mlruns
+      --gunicorn-opts "--timeout 300 --workers 2"
+
+    ports:
+      - "${MLFLOW_PORT:-5000}:5000"
+
+    volumes:
+      - ./mlruns:/app/mlruns
+
+    env_file:
+      - .env
+
+    restart: unless-stopped
+
+    profiles:
+      - mlflow
+
+  # ── Service collecteur HuggingFace ───────────────────────────
+  # Exposé sur HuggingFace Spaces — appelé par cron-job.org toutes les 5 min
+  # Pour tester localement : http://localhost:8080/collect
+  collector:
+    build:
+      context: .
+      dockerfile: Dockerfile.collector
+
+    ports:
+      - "${COLLECTOR_PORT:-8080}:5000"
+
+    env_file:
+      - .env
+
+    restart: unless-stopped
+
+    profiles:
+      - collector

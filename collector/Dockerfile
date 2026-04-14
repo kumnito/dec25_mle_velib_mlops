@@ -1,0 +1,26 @@
+# ─────────────────────────────────────────────────────────────
+# Dockerfile.collector — Service de collecte Vélib'
+# Hébergé sur HuggingFace Spaces (SDK Docker)
+# Appelé par cron-job.org toutes les 5 minutes
+# ─────────────────────────────────────────────────────────────
+FROM python:3.11-slim
+
+LABEL description="Vélib' collector — Flask + HuggingFace Spaces"
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Dépendances légères uniquement (pas ML)
+COPY requirements.collector.txt .
+RUN pip install --no-cache-dir -r requirements.collector.txt
+
+# Code de collecte
+COPY ingestion_hf.py .
+COPY collector_app.py .
+
+EXPOSE 7860
+
+# Gunicorn pour la production sur Render
+CMD ["gunicorn", "collector_app:app", "--bind", "0.0.0.0:7860", "--workers", "1", "--timeout", "120"]

@@ -1,0 +1,6 @@
+artifact_location: /app/mlruns/403667825945691083
+creation_time: 1775340615363
+experiment_id: '403667825945691083'
+last_update_time: 1775340615363
+lifecycle_stage: active
+name: velib_hyperparameter_tuning

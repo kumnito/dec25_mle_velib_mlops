@@ -1,0 +1,5 @@
+Modele,MAE,RMSE,R2,Temps
+Random Forest,7.923,11.3492,0.7303,488.4
+XGBoost,7.948,11.496,0.7233,11.3
+Ridge,8.5526,11.6046,0.718,3.5
+Baseline (moyenne),16.5597,21.8757,-0.002,0.0

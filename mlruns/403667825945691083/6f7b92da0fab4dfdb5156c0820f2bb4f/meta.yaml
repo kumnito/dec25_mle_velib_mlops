@@ -1,0 +1,15 @@
+artifact_uri: /app/mlruns/403667825945691083/6f7b92da0fab4dfdb5156c0820f2bb4f/artifacts
+end_time: 1775443526994
+entry_point_name: ''
+experiment_id: '403667825945691083'
+lifecycle_stage: active
+run_id: 6f7b92da0fab4dfdb5156c0820f2bb4f
+run_name: GradientBoosting_optuna
+run_uuid: 6f7b92da0fab4dfdb5156c0820f2bb4f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775390108683
+status: 3
+tags: []
+user_id: root
