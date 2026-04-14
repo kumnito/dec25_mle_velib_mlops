@@ -32,7 +32,7 @@ jobs:
           git init
           git config user.email "github-actions@github.com"
           git config user.name  "GitHub Actions"
-          git remote add space https://voroman:$HF_TOKEN@huggingface.co/spaces/voroman/velib-collector
+          git remote add space https://oauth2:$HF_TOKEN@huggingface.co/spaces/voroman/velib-collector
           git add .
           git commit -m "Sync from GitHub — ${{ github.sha }}"
           git push space HEAD:main --force
